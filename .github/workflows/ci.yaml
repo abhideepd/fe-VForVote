@@ -59,6 +59,8 @@ jobs:
 
       - name: Install & Build
         run: |
+          npm install
+          npm install -g @angular/cli > /dev/null
           npm run build -- --configuration=production
 
       - name: Upload Artifact
