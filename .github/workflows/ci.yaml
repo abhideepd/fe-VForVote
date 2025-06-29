@@ -79,6 +79,11 @@ jobs:
         with:
           name: dist
 
+      - name: Debug workspace structure
+        run: |
+          echo "Listing everything"
+          ls -R .
+
       - name: Setup SSH Key & Known Hosts
         run: |
           mkdir -p ~/.ssh
@@ -89,11 +94,6 @@ jobs:
       - name: Deploy via rsync
         run: |
           rsync -avz --delete dist/fe-vforvote/ ubuntu@56.228.21.204:/var/www/html/fe-vforvote
-
-      - name: Debug workspace structure
-        run: |
-          echo "Listing everything"
-          ls -R .
 
       - name: Reload Nginx
         run: |
