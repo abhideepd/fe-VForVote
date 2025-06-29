@@ -32,8 +32,8 @@ jobs:
         uses: easingthemes/ssh-deploy@v2.1.5
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
-          SOURCE: "dist/angular-demo/"
+          SOURCE: "dist/fe-vforvote/"
           # REMOTE_HOST: "ec2-remote-host"
-          REMOTE_HOST: "FE-Vote"
+          REMOTE_HOST: "ec2-56-228-21-204.eu-north-1.compute.amazonaws.com"
           REMOTE_USER: "ubuntu"
-          TARGET: "/var/www/html/angular-demo/"
+          TARGET: "/var/www/html/fe-vforvote/"
