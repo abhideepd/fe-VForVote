@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "votingapp_frontend": {
+    "fe-vforvote": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:class": {
@@ -38,7 +38,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/votingapp_frontend",
+            "outputPath": "dist/fe-vforvote",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -85,10 +85,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "votingapp_frontend:build:production"
+              "buildTarget": "fe-vforvote:build:production",
+              "baseHref": "/fe-vforvote"
             },
             "development": {
-              "buildTarget": "votingapp_frontend:build:development"
+              "buildTarget": "fe-vforvote:build:development"
             }
           },
           "defaultConfiguration": "development"
