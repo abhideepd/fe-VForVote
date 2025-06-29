@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: dist/
+          path: dist/fe-vforvote
 
   deploy:
     needs: build
@@ -78,6 +78,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist
+          path: ./dist
 
       - name: Setup SSH Key & Known Hosts
         run: |
@@ -88,7 +89,7 @@ jobs:
 
       - name: Deploy via rsync
         run: |
-          rsync -avz --delete dist/ ubuntu@56.228.21.204:/var/www/html/fe-vforvote
+          rsync -avz --delete dist/fe-vforvote/ ubuntu@56.228.21.204:/var/www/html/fe-vforvote
 
       - name: Reload Nginx
         run: |
