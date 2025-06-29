@@ -33,6 +33,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
           SOURCE: "dist/angular-demo/"
-          REMOTE_HOST: "ec2-remote-host"
+          # REMOTE_HOST: "ec2-remote-host"
+          REMOTE_HOST: "FE-Vote"
           REMOTE_USER: "ubuntu"
           TARGET: "/var/www/html/angular-demo/"
