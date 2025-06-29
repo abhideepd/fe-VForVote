@@ -90,6 +90,11 @@ jobs:
         run: |
           rsync -avz --delete dist/fe-vforvote/ ubuntu@56.228.21.204:/var/www/html/fe-vforvote
 
+      - name: Debug workspace structure
+        run: |
+          echo "Listing everything"
+          ls -R .
+
       - name: Reload Nginx
         run: |
           ssh ubuntu@56.228.21.204 \
