@@ -1,101 +1,101 @@
-# name: CI
-# on:
-#   push:
-#     branches: [main]
-#   pull_request:
-#     branches: [main]
-# jobs:
-#   build:
-#     # using Ubuntu
-#     runs-on: ubuntu-latest
-#     defaults:
-#       run:
-#         working-directory: ./
-#     steps:
-#       - uses: actions/checkout@v3
-#       - uses: actions/setup-node@v3
-#         with:
-#           node-version: "18.x"
-#       - uses: actions/cache@v3 # this allows for re-using node_modules caching, making builds a bit faster.
-#         with:
-#           path: ~/.npm
-#           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-#           restore-keys: |
-#             ${{ runner.os }}-node-
-#       - name: NPM Install
-#         run: npm install
-#       - name: NPM Install Angular
-#         run: npm install -g @angular/cli > /dev/null
-#       - name: NPM build Angular Production
-#         run: npm run build:prod
-#       - name: Deploy to my EC2 instance
-#         uses: easingthemes/ssh-deploy@v2.1.5
-#         with:
-#           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
-#           SOURCE: "dist/fe-vforvote/"
-#           # REMOTE_HOST: "ec2-remote-host"
-#           REMOTE_HOST: "ec2-56-228-21-204.eu-north-1.compute.amazonaws.com"
-#           REMOTE_USER: "ubuntu"
-#           TARGET: "/var/www/html/fe-vforvote/"
-name: CI/CD Angular → EC2
-
+name: CI
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 jobs:
   build:
+    # using Ubuntu
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: "18.x"
-
-      - name: Install & Build
-        run: |
-          npm install
-          npm install -g @angular/cli > /dev/null
-          npm run build --configuration=production
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/cache@v3 # this allows for re-using node_modules caching, making builds a bit faster.
         with:
-          name: dist
-          path: dist/fe-vforvote
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v4
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: NPM Install
+        run: npm install
+      - name: NPM Install Angular
+        run: npm install -g @angular/cli > /dev/null
+      - name: NPM build Angular Production
+        run: npm run build:prod
+      - name: Deploy to my EC2 instance
+        uses: easingthemes/ssh-deploy@v2.1.5
         with:
-          name: dist
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
+          SOURCE: "dist/fe-vforvote/"
+          # REMOTE_HOST: "ec2-remote-host"
+          REMOTE_HOST: "56.228.21.204"
+          REMOTE_USER: "ubuntu"
+          TARGET: "/var/www/html/fe-vforvote/"
+# name: CI/CD Angular → EC2
 
-      - name: Debug workspace structure
-        run: |
-          echo "Listing everything"
-          ls -R .
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+#     branches: [main]
 
-      - name: Setup SSH Key & Known Hosts
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 56.228.21.204 >> ~/.ssh/known_hosts
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Deploy via rsync
-        run: |
-          rsync -avz --delete dist/fe-vforvote/ ubuntu@56.228.21.204:/var/www/html/fe-vforvote
+#       - name: Use Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: "18.x"
 
-      - name: Reload Nginx
-        run: |
-          ssh ubuntu@56.228.21.204 \
-            "sudo systemctl reload nginx"
+#       - name: Install & Build
+#         run: |
+#           npm install
+#           npm install -g @angular/cli > /dev/null
+#           npm run build --configuration=production
+
+#       - name: Upload Artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: dist
+#           path: dist/fe-vforvote
+
+#   deploy:
+#     needs: build
+#     runs-on: ubuntu-latest
+#     environment: production
+#     steps:
+#       - name: Download Artifact
+#         uses: actions/download-artifact@v4
+#         with:
+#           name: dist
+
+#       - name: Debug workspace structure
+#         run: |
+#           echo "Listing everything"
+#           ls -R .
+
+#       - name: Setup SSH Key & Known Hosts
+#         run: |
+#           mkdir -p ~/.ssh
+#           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#           chmod 600 ~/.ssh/id_rsa
+#           ssh-keyscan -H 56.228.21.204 >> ~/.ssh/known_hosts
+
+#       - name: Deploy via rsync
+#         run: |
+#           rsync -avz --delete dist/fe-vforvote/ ubuntu@56.228.21.204:/var/www/html/fe-vforvote
+
+#       - name: Reload Nginx
+#         run: |
+#           ssh ubuntu@56.228.21.204 \
+#             "sudo systemctl reload nginx"
